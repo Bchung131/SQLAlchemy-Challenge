@@ -116,23 +116,23 @@ def date_stats(start=None, end=None):
     
 # Find min, max and average temps from specific date   
     session = Session(engine)
-    temp_stats = [func.max(Measurement.tobs), func.min(Measurement.tobs), func.avg(Measurement.tobs)]
+    temp_sel_stats = [func.max(Measurement.tobs), func.min(Measurement.tobs), func.avg(Measurement.tobs)]
     
     if not end:
         start = dt.datetime.strptime(start, "%m%d%Y")
         
-        query_result = session.query(*temp_stats).\
+        temps_query_result = session.query(*temp_sel_stats).\
             filter(Measurement.date >= start).all()
             
         session.close()
         
-        temperature = list(np.ravel(query_result))
-        return jsonify(temperature)
+        temps = list(np.ravel(temps_query_result))
+        return jsonify(temps)
 
     start = dt.datetime.strptime(start, "%m%d%Y")
     end = dt.datetime.strptime(end, "%m%d%Y")
     
-    query_result = session.query(*temp_stats).\
+    temps_query_result = session.query(*temp_sel_stats).\
         filter(Measurement.date >= start).\
             filter(Measurement.date <= end).all()
     
